@@ -33,15 +33,16 @@ class AlgorithmPlayground {
     }
   }
 
-  private async loadScripts() {
+  private loadScripts() {
     // Manually define available scripts for now
     // In a real project, you could use a build-time script to generate this list
     const scriptFiles = [
-        'key-trends-to-ten',
+      'submask-tut',
+      'key-trends-to-ten',
       'bubble-sort',
       'binary-search',
       'fibonacci',
-      'quicksort'
+      'quicksort',
     ];
 
     for (const filename of scriptFiles) {
@@ -58,12 +59,13 @@ class AlgorithmPlayground {
   private formatScriptName(filename: string): string {
     return filename
       .replace(/[-_]/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   }
 
   private renderTabs() {
     if (this.scripts.length === 0) {
-      this.tabNavElement.innerHTML = '<div class="loading">No scripts found in /scripts folder</div>';
+      this.tabNavElement.innerHTML =
+        '<div class="loading">No scripts found in /scripts folder</div>';
       this.tabContentElement.innerHTML = `
         <div class="script-content active">
           <p>Create TypeScript files in the <code>src/scripts/</code> folder to get started!</p>
@@ -73,7 +75,9 @@ class AlgorithmPlayground {
       return;
     }
 
-    const tabButtons = this.scripts.map(script => `
+    const tabButtons = this.scripts
+      .map(
+        (script) => `
       <button
         class="tab-button"
         data-script="${script.filename}"
@@ -81,11 +85,15 @@ class AlgorithmPlayground {
       >
         ${script.name}
       </button>
-    `).join('');
+    `
+      )
+      .join('');
 
     this.tabNavElement.innerHTML = tabButtons;
 
-    const tabContents = this.scripts.map(script => `
+    const tabContents = this.scripts
+      .map(
+        (script) => `
       <div class="script-content" id="content-${script.filename}">
         <button class="run-button" onclick="playground.runScript('${script.filename}')">
           🚀 Run ${script.name}
@@ -97,21 +105,25 @@ class AlgorithmPlayground {
           </div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
 
     this.tabContentElement.innerHTML = tabContents;
   }
 
   public switchToTab(scriptFilename: string) {
-    document.querySelectorAll('.tab-button').forEach(btn => {
+    document.querySelectorAll('.tab-button').forEach((btn) => {
       btn.classList.remove('active');
     });
 
-    document.querySelectorAll('.script-content').forEach(content => {
+    document.querySelectorAll('.script-content').forEach((content) => {
       content.classList.remove('active');
     });
 
-    const activeButton = document.querySelector(`[data-script="${scriptFilename}"]`);
+    const activeButton = document.querySelector(
+      `[data-script="${scriptFilename}"]`
+    );
     const activeContent = document.getElementById(`content-${scriptFilename}`);
 
     if (activeButton && activeContent) {
@@ -129,7 +141,9 @@ class AlgorithmPlayground {
     outputElement.className = 'output-content loading';
 
     try {
-      const scriptInfo = this.scripts.find(s => s.filename === scriptFilename);
+      const scriptInfo = this.scripts.find(
+        (s) => s.filename === scriptFilename
+      );
       if (!scriptInfo) {
         throw new Error('Script not found');
       }
@@ -137,9 +151,13 @@ class AlgorithmPlayground {
       if (!scriptInfo.module) {
         // Dynamic import the script module
         try {
-          scriptInfo.module = await import(`./scripts/${scriptFilename}.ts`) as ScriptModule;
+          scriptInfo.module = (await import(
+            `./scripts/${scriptFilename}.ts`
+          )) as ScriptModule;
         } catch (error) {
-          throw new Error(`Failed to load module: ${scriptFilename}.ts - ${error}`);
+          throw new Error(
+            `Failed to load module: ${scriptFilename}.ts - ${error}`
+          );
         }
       }
 
@@ -166,9 +184,11 @@ class AlgorithmPlayground {
     let output = '';
 
     const captureOutput = (type: string, ...args: any[]) => {
-      const message = args.map(arg =>
-        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-      ).join(' ');
+      const message = args
+        .map((arg) =>
+          typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+        )
+        .join(' ');
 
       output += `[${type.toUpperCase()}] ${message}\n`;
       outputElement.textContent = output;
