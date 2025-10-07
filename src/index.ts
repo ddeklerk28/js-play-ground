@@ -37,6 +37,7 @@ class AlgorithmPlayground {
     // Manually define available scripts for now
     // In a real project, you could use a build-time script to generate this list
     const scriptFiles = [
+      'a_connection-pooling',
       'submask-tut',
       'key-trends-to-ten',
       'bubble-sort',
